@@ -1,5 +1,5 @@
 //
-// KF6845_Bus_Control_Logic
+// KF6845_Horizontal
 // Horizontal Control
 //
 // Written by kitune-san
