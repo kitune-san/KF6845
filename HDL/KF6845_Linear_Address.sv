@@ -1,6 +1,6 @@
 //
-// KF6845_Line_Address
-// Line Address Generator
+// KF6845_Linear_Address
+// Linear Address Generator
 //
 // Written by kitune-san
 //
