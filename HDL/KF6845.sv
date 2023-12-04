@@ -67,7 +67,8 @@ module KF6845 (
     logic           Horizontal_End;
     logic           H_Display;
     logic           V_Display;
-    logic           Vtotal;
+    logic   [1:0]   interlace,
+    logic           V_total;
     logic           Scanline_End;
 
     //
@@ -95,7 +96,7 @@ module KF6845 (
         .write_cursor_start_register                (write_cursor_start_register),
         .write_cursor_end_register                  (write_cursor_end_register),
         .write_start_address_h_register             (write_start_address_h_register),
-        .write_start_address_l__register            (write_start_address_l__register),
+        .write_start_address_l_register             (write_start_address_l_register),
         .write_cursor_h_register                    (write_cursor_h_register),
         .write_cursor_l_register                    (write_cursor_l_register),
         .write_light_pen_h_register                 (write_light_pen_h_register),
@@ -141,7 +142,8 @@ module KF6845 (
         .write_maximum_scan_line_register           (write_maximum_scan_line_register),
         .Horizontal                                 (Horizontal),
         .Horizontal_Half                            (Horizontal_Half),
-        .Vtotal                                     (Vtotal),
+        .interlace                                  (interlace)
+        .V_total                                    (V_total),
         .V_Display                                  (V_Display),
         .Scanline_End                               (Scanline_End),
         .RA                                         (RA),
@@ -157,8 +159,11 @@ module KF6845 (
         .clock                                      (clock),
         .video_clock_enable                         (video_clock_enable),
         .reset                                      (reset),
+        .internal_data_bus                          (internal_data_bus),
+        .write_start_address_h_register             (write_start_address_h_register),
+        .write_start_address_l_register             (write_start_address_l_register),
         .Horizontal_End                             (Horizontal_End),
-        .Vtotal                                     (Vtotal),
+        .V_total                                    (V_total),
         .Scanline_End                               (Scanline_End),
         .MA                                         (MA)
     );

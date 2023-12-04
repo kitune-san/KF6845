@@ -31,7 +31,7 @@ module KF6845_Bus_Control_Logic (
     output  logic           write_cursor_start_register,
     output  logic           write_cursor_end_register,
     output  logic           write_start_address_h_register,
-    output  logic           write_start_address_l__register,
+    output  logic           write_start_address_l_register,
     output  logic           write_cursor_h_register,
     output  logic           write_cursor_l_register,
     output  logic           write_light_pen_h_register,
@@ -123,7 +123,7 @@ module KF6845_Bus_Control_Logic (
     assign  write_cursor_start_register             = (write_register & (address == 5'h0A));
     assign  write_cursor_end_register               = (write_register & (address == 5'h0B));
     assign  write_start_address_h_register          = (write_register & (address == 5'h0C));
-    assign  write_start_address_l__register         = (write_register & (address == 5'h0D));
+    assign  write_start_address_l_register          = (write_register & (address == 5'h0D));
     assign  write_cursor_h_register                 = (write_register & (address == 5'h0E));
     assign  write_cursor_l_register                 = (write_register & (address == 5'h0F));
     assign  write_light_pen_h_register              = (write_register & (address == 5'h10));
