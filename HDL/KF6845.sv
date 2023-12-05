@@ -183,6 +183,7 @@ module KF6845 (
         .write_cursor_l_register                    (write_cursor_l_register),
         .read_cursor_h_register                     (read_cursor_h_register),
         .read_cursor_l_register                     (read_cursor_l_register),
+        .V_total                                    (V_total),
         .RA                                         (RA),
         .MA                                         (MA),
         .CURSOR                                     (CURSOR)
