@@ -18,7 +18,7 @@ module KF6845 (
     output  logic   [7:0]   D_OUT,
 
     // Light Pen Strobe
-    input   logic           LPSTB_N,
+    input   logic           LPSTB,
     // Cursor
     output  logic           CURSOR,
 
@@ -196,12 +196,11 @@ module KF6845 (
         .clock                                      (clock),
         .video_clock_enable                         (video_clock_enable),
         .reset                                      (reset),
-        .internal_data_bus_in                       (internal_data_bus),
         .internal_data_bus_out                      (internal_data_bus_out_light_pen),
         .read_light_pen_h_register                  (read_light_pen_h_register),
         .read_light_pen_l_register                  (read_light_pen_l_register),
         .MA                                         (MA),
-        .LPSTB_N                                    (LPSTB_N)
+        .LPSTB                                      (LPSTB)
     );
 
     //
