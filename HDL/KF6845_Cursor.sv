@@ -107,8 +107,14 @@ module KF6845_Cursor (
             casez (blink_config)
                 2'b00:  cursor_on   <= 1'b1;
                 2'b01:  cursor_on   <= 1'b0;
-                2'b10:  cursor_on   <= (~|field_rate_counter[3:0]) ? ~cursor_on : cursor_on;
-                2'b11:  cursor_on   <= (~|field_rate_counter[4:0]) ? ~cursor_on : cursor_on;
+                2'b10:  if (V_total)
+                            cursor_on   <= (~|field_rate_counter[3:0]) ? ~cursor_on : cursor_on;
+                        else
+                            cursor_on   <= cursor_on;
+                2'b11:  if (V_total)
+                            cursor_on   <= (~|field_rate_counter[4:0]) ? ~cursor_on : cursor_on;
+                        else
+                            cursor_on   <= cursor_on;
             endcase
     end
 
