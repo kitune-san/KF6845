@@ -76,7 +76,7 @@ module KF6845_Vertical_Control (
     logic   [6:0]   vertical_sync_position;
     always_ff @(posedge clock, posedge reset) begin
         if (reset)
-            vertical_sync_position      <= 7'h00;
+            vertical_sync_position      <= 7'h3F;
         else if (write_vertical_sync_position_register)
             vertical_sync_position      <= internal_data_bus[6:0];
         else

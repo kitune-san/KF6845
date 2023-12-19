@@ -35,7 +35,7 @@ module KF6845_Cursor (
     logic   [4:0]   cursor_start;
     always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
-            blink_config            <= 2'h0;
+            blink_config            <= 2'h1;
             cursor_start            <= 5'h0;
         end
         else if (write_cursor_start_register) begin

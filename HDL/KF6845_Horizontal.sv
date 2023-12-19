@@ -91,7 +91,7 @@ module KF6845_Horizontal_Control (
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset)
-            horizontal_counter                  <= 8'h00;
+            horizontal_counter                  <= 8'hFF;
         else if (video_clock_enable)
             horizontal_counter                  <= next_horizontal_counter;
         else
