@@ -216,6 +216,8 @@ module KF6845_Vertical_Control (
     //
     // RA
     //
+    wire    update_ra_timing = video_clock_enable & Horizontal;
+
     always_ff @(posedge clock, posedge reset) begin
         if (reset)
             RA                          <= 5'h00;
@@ -224,7 +226,7 @@ module KF6845_Vertical_Control (
                 RA                      <= 5'h00;
             else                                                // Interlace sync and Video mode & ODD
                 RA                      <= 5'h01;
-        else if ((video_clock_enable) && (Horizontal))
+        else if (update_ra_timing)
             if (~interlace[0] || ~interlace[1])                 // Normal sync or Interlace sync mode
                 RA                      <= RA + 5'h01;
             else                                                // Interlace sync and Video mode
@@ -236,41 +238,45 @@ module KF6845_Vertical_Control (
     //
     // VSYNC
     //
-    logic   [3:0]   Vsync_counter;
-    logic           Vsync_even;
+    logic   [4:0]   Vsync_counter;
+    logic   [4:0]   increment_Vsync_counter;
     logic           Vsync_odd;
+    logic           Vsync_even;
+
+    assign  increment_Vsync_counter = Vsync_counter + 5'h1;
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
-            Vsync_even                  <= 1'b0;
-            Vsync_counter               <= 4'h0;
+            Vsync_odd                   <= 1'b0;
+            Vsync_counter               <= 5'h0;
         end
-        else if (&Vsync_counter) begin
-            Vsync_even                  <= 1'b0;
-            Vsync_counter               <= 4'h0;
-        end
-        else if (Scanline_End)
-            if (next_character_row_counter == vertical_sync_position) begin
-                Vsync_even              <= 1'b1;
-                Vsync_counter           <= 4'h0;
+//        else if (Scanline_End)
+        else if (update_ra_timing)
+            if ((Scanline_End) && (next_character_row_counter == vertical_sync_position)) begin
+                Vsync_odd               <= 1'b1;
+                Vsync_counter           <= 5'h0;
+            end
+            else if (increment_Vsync_counter == 5'h10) begin
+                Vsync_odd               <= 1'b0;
+                Vsync_counter           <= 5'h0;
             end
             else begin
-                Vsync_even              <= Vsync_even;
-                Vsync_counter           <= Vsync_counter + 4'h1;
+                Vsync_odd               <= Vsync_odd;
+                Vsync_counter           <= increment_Vsync_counter;
             end
         else begin
-            Vsync_even                  <= Vsync_even;
+            Vsync_odd                   <= Vsync_odd;
             Vsync_counter               <= Vsync_counter;
         end
     end
 
     always_ff @(posedge clock, posedge reset) begin
         if (reset)
-            Vsync_odd                   <= 1'b0;
+            Vsync_even                  <= 1'b0;
         else if (video_clock_enable & Horizontal_Half)
-            Vsync_odd                   <= Vsync_even;
+            Vsync_even                  <= Vsync_odd;
         else
-            Vsync_odd                   <= Vsync_odd;
+            Vsync_even                  <= Vsync_even;
     end
 
     assign  VSYNC   = (odd_or_even) ? Vsync_odd : Vsync_even;
