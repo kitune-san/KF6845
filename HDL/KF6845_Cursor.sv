@@ -25,7 +25,7 @@ module KF6845_Cursor (
     input   logic   [13:0]  MA,
 
     // Output
-    output  logic   [13:0]  CURSOR
+    output  logic           CURSOR
 );
 
     //

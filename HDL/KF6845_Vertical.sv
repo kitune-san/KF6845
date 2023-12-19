@@ -24,7 +24,7 @@ module KF6845_Vertical_Control (
 
     // Output
     output  logic   [1:0]   interlace,
-    output  logic           V_Total,
+    output  logic           V_total,
     output  logic           V_Display,
     output  logic           Scanline_End,
     output  logic   [4:0]   RA,
@@ -117,7 +117,7 @@ module KF6845_Vertical_Control (
         if (reset)
             scan_line_counter           <= 5'h00;
         else if ((video_clock_enable) && (Horizontal))
-            if (V_Total || Scanline_End)
+            if (V_total || Scanline_End)
                 scan_line_counter       <= 5'h00;
             else
                 scan_line_counter       <= scan_line_counter + 5'h01;
@@ -133,7 +133,7 @@ module KF6845_Vertical_Control (
     logic   [6:0]   next_character_row_counter;
     logic   [6:0]   character_row_counter;
     always_comb begin
-        if (V_Total)
+        if (V_total)
             next_character_row_counter  = 8'h00;
         else if (Scanline_End)
             next_character_row_counter  = character_row_counter + 8'h01;
@@ -157,7 +157,7 @@ module KF6845_Vertical_Control (
             interlace                   <= 2'b00;
             odd_or_even                 <= 1'b1;
         end
-        else if (V_Total) begin
+        else if (V_total) begin
             interlace                   <= interlace_mode[1:0];
             if (~interlace_mode[0])
                 odd_or_even             <= 1'b1;
@@ -171,13 +171,13 @@ module KF6845_Vertical_Control (
     end
 
     //
-    // V_Total
+    // V_total
     //
     logic   Vadjust;
     always_ff @(posedge clock, posedge reset) begin
         if (reset)
             Vadjust                     <= 1'b0;
-        else if (V_Total)
+        else if (V_total)
             Vadjust                     <= 1'b0;
         else if (Scanline_End && (character_row_counter == vertical_total))
             Vadjust                     <= 1'b1;
@@ -188,14 +188,14 @@ module KF6845_Vertical_Control (
     always_comb begin
         if (odd_or_even)    // interlace == odd
             if (~|vertical_total_adjust)    // adjust == 0
-                V_Total = (character_row_counter == vertical_total);
+                V_total = (character_row_counter == vertical_total);
             else                            // adjust >  0
-                V_Total = (Vadjust & scan_line_counter == (vertical_total_adjust-5'h01));
+                V_total = (Vadjust & scan_line_counter == (vertical_total_adjust-5'h01));
         else                // interlace == even
-            V_Total = (Vadjust & (scan_line_counter == vertical_total_adjust));
+            V_total = (Vadjust & (scan_line_counter == vertical_total_adjust));
 
-        // V_Total timing
-        V_Total = video_clock_enable & Horizontal & V_Total;
+        // V_total timing
+        V_total = video_clock_enable & Horizontal & V_total;
     end
 
     //
@@ -207,7 +207,7 @@ module KF6845_Vertical_Control (
             V_Display                   <= 1'b0;
         else if (wire_Vertical_End)
             V_Display                   <= 1'b0;
-        else if (V_Total)
+        else if (V_total)
             V_Display                   <= 1'b1;
         else
             V_Display                   <= V_Display;
@@ -221,7 +221,7 @@ module KF6845_Vertical_Control (
     always_ff @(posedge clock, posedge reset) begin
         if (reset)
             RA                          <= 5'h00;
-        else if (V_Total || Scanline_End)
+        else if (V_total || Scanline_End)
             if (~interlace[0] || ~interlace[1] || ~odd_or_even) // Normal sync or Interlace sync mode || (Interlace sync and Video mode & EVEN)
                 RA                      <= 5'h00;
             else                                                // Interlace sync and Video mode & ODD
