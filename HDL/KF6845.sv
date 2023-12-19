@@ -67,9 +67,16 @@ module KF6845 (
     logic           Horizontal_End;
     logic           H_Display;
     logic           V_Display;
-    logic   [1:0]   interlace,
+    logic   [1:0]   interlace;
     logic           V_total;
     logic           Scanline_End;
+    logic           CURSOR_Buffer;
+    logic           HSYNC_Buffer;
+    logic           VSYNC_Buffer;
+    logic   [4:0]   RA_Buffer;
+    logic   [13:0]  MA_Buffer;
+    logic           DE_Buffer;
+
 
     //
     // Data Bus Buffer & Read/Write Control Logic
@@ -123,7 +130,7 @@ module KF6845 (
         .Horizontal_Half                            (Horizontal_Half),
         .Horizontal_End                             (Horizontal_End),
         .H_Display                                  (H_Display),
-        .HSYNC                                      (HSYNC)
+        .HSYNC                                      (HSYNC_Buffer)
     );
 
     //
@@ -142,15 +149,15 @@ module KF6845 (
         .write_maximum_scan_line_register           (write_maximum_scan_line_register),
         .Horizontal                                 (Horizontal),
         .Horizontal_Half                            (Horizontal_Half),
-        .interlace                                  (interlace)
+        .interlace                                  (interlace),
         .V_total                                    (V_total),
         .V_Display                                  (V_Display),
         .Scanline_End                               (Scanline_End),
-        .RA                                         (RA),
-        .VSYNC                                      (VSYNC)
+        .RA                                         (RA_Buffer),
+        .VSYNC                                      (VSYNC_Buffer)
     );
 
-    assign  DE  = H_Display & V_Display;
+    assign  DE_Buffer   = H_Display & V_Display;
 
     //
     // Linear Address Generator
@@ -165,7 +172,7 @@ module KF6845 (
         .Horizontal_End                             (Horizontal_End),
         .V_total                                    (V_total),
         .Scanline_End                               (Scanline_End),
-        .MA                                         (MA)
+        .MA                                         (MA_Buffer)
     );
 
     //
@@ -184,9 +191,9 @@ module KF6845 (
         .read_cursor_h_register                     (read_cursor_h_register),
         .read_cursor_l_register                     (read_cursor_l_register),
         .V_total                                    (V_total),
-        .RA                                         (RA),
-        .MA                                         (MA),
-        .CURSOR                                     (CURSOR)
+        .RA                                         (RA_Buffer),
+        .MA                                         (MA_Buffer),
+        .CURSOR                                     (CURSOR_Buffer)
     );
 
     //
@@ -217,6 +224,28 @@ module KF6845 (
             D_OUT   = internal_data_bus_out_light_pen;
         else
             D_OUT   = 8'hFF;
+    end
+
+    //
+    // Output signals
+    //
+    always_ff @(posedge clock, posedge reset) begin
+        if (reset) begin
+            CURSOR  <= 1'b0;
+            HSYNC   <= 1'b0;
+            VSYNC   <= 1'b0;
+            RA      <= 5'h0;
+            MA      <= 14'h0;
+            DE      <= 1'b0;
+        end
+        else begin
+            CURSOR  <= CURSOR_Buffer;
+            HSYNC   <= HSYNC_Buffer;
+            VSYNC   <= VSYNC_Buffer;
+            RA      <= RA_Buffer;
+            MA      <= MA_Buffer;
+            DE      <= DE_Buffer;
+        end
     end
 
 endmodule
